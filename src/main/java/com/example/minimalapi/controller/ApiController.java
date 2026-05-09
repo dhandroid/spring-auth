@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,11 +29,13 @@ public class ApiController {
     }
 
     @GetMapping("/private")
+    @SecurityRequirement(name = "bearer-jwt")
     @Operation(
             summary = "Private endpoint",
-            description = "Returns a private sample response (currently not secured)",
+            description = "Requires Authorization: Bearer <JWT> from POST /auth/login",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Private response returned")
+                    @ApiResponse(responseCode = "200", description = "Private response returned"),
+                    @ApiResponse(responseCode = "401", description = "Missing or invalid JWT")
             }
     )
     public String privateEndpoint() {
