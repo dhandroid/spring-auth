@@ -1,0 +1,30 @@
+# -----------------------------------------------------------------------------
+# OAuth2 Resource Server (Auth0)
+# -----------------------------------------------------------------------------
+# Mental model: Auth0 issues signed JWT access tokens. This app does NOT log users
+# in via oauth2Login(); it only VALIDATES Bearer tokens on incoming requests.
+#
+# issuer-uri: must match the JWT "iss" claim exactly. Spring uses it to download
+#   /.well-known/openid-configuration and then the JWKS URI to fetch public keys.
+#
+# audience: strongly recommended in production — validates the JWT "aud" claim
+#   so tokens minted for another API cannot be replayed here.
+#
+# Use env vars in real deployments; never commit tenant secrets.
+#
+# IMPORTANT: Spring resolves ${...} everywhere in a property value. A default like
+#   https://YOUR_TENANT.auth0.com/
+# is broken because ${YOUR_TENANT} is treated as a nested placeholder (often empty),
+# producing a malformed URL (e.g. https:/.well-known/...) and JwtDecoderInitializationException.
+# Issuer must match JWT "iss" exactly (Auth0: Settings → Domain, often *.us.auth0.com).
+# Override per environment with AUTH0_ISSUER_URI if needed (avoid ${NESTED} inside defaults).
+# -----------------------------------------------------------------------------
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dhandroid15.us.auth0.com/
+          # Recommended production: validate JWT "aud" (your Auth0 API identifier)
+          # audiences:
+          #   - ${AUTH0_AUDIENCE}

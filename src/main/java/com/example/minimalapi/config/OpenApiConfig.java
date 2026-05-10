@@ -1,9 +1,11 @@
 package com.example.minimalapi.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,6 +15,12 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI minimalApiOpenApi() {
         return new OpenAPI()
+                .components(new Components().addSecuritySchemes("bearer-jwt",
+                        new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .description("Auth0 access token")))
                 .info(new Info()
                         .title("Minimal API Documentation")
                         .description("Interactive API documentation for the Spring Boot minimal API")
